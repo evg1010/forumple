@@ -15,7 +15,7 @@
 <Navbar>
 	<NavBrand href="/">
 		<span
-			class="p-4 self-center whitespace-nowrap text-2xl text-rose-500 font-semibold dark:text-white"
+			class="p-4 self-center whitespace-nowrap text-2xl text-rose-700 font-semibold dark:text-white"
 			>Forumple</span
 		>
 	</NavBrand>
@@ -31,3 +31,5 @@
 		</Dropdown>
 	</NavUl>
 </Navbar>
+
+<slot />

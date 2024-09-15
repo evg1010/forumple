@@ -16,5 +16,5 @@ export const GET: RequestHandler = async (event) => {
 	}
     
     // return the user to an error page with instructions
-	throw error(404, 'Code not found');
+	throw error(303, 'Auth error');
 };

@@ -8,11 +8,12 @@
 <div
 	class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-fuchsia-500 via-rose-400 to-pink-200"
 >
-	<Card class="max-w-md mx-auto p-8">
+	<Card class="w-fit mx-auto p-8">
 		<Heading class="text-3xl font-bold text-center mb-4">Iniciar sesión</Heading>
 		<form
 			method="post"
 			action="/?/signInWithGithub"
+			class="flex justify-center"
 			use:enhance={() => {
 				return async ({ result }) => {
 					if (result.type === 'error') {
@@ -26,7 +27,7 @@
 			<Button
 				variant="outline"
 				type="submit"
-				class="w-full py-2 px-4 flex justify-center items-center gap-2"
+				class="w-fit py-2 px-4 flex justify-center items-center gap-2"
 				><GithubSolid />
 				Iniciar sesión con Github
 			</Button>

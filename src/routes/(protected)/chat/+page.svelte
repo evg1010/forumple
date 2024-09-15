@@ -3,7 +3,13 @@
 	let message = '';
 	let messages = [
 		{ name: 'User1', text: 'Hello everyone!' },
-		{ name: 'User2', text: 'Hi User1!' }
+		{ name: 'User2', text: 'Hi User1!' },
+		{ name: 'User3', text: 'Hello!!!' },
+		{ name: 'User2', text: 'Hi User3!' },
+		{ name: 'User4', text: 'Good morning everyone!' },
+		{ name: 'User3', text: 'Hi User4!' },
+		{ name: 'User1', text: 'What should we do tomorrow morning?' },
+		{ name: 'User2', text: 'I cannot go tomorrow anywhere, I am sick' }
 		// Add more messages here...
 	];
 

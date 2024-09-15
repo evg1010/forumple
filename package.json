@@ -35,9 +35,11 @@
 	"type": "module",
 	"dependencies": {
 		"@popperjs/core": "^2.11.8",
-		"flowbite": "^2.4.1",
-		"flowbite-svelte": "^0.46.13",
+		"@supabase/supabase-js": "^2.45.4",
+		"flowbite": "^2.5.1",
+		"flowbite-svelte": "^0.46.16",
 		"flowbite-svelte-icons": "^1.6.1",
+		"svelte-sonner": "^0.3.28",
 		"tailwind-merge": "^2.3.0"
 	}
 }

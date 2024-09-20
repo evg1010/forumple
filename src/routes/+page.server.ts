@@ -1,5 +1,16 @@
 import { error, redirect, type Actions } from "@sveltejs/kit"
+import { supabase } from "$lib/supabaseClient";
 
+export async function load() {
+  console.log("HEREEEEEE");
+  
+  const { data } = await supabase.from("users").select('*');
+  console.log(data);
+  
+  return {
+    users: data ?? [],
+  };
+}
 
 export const actions: Actions = {
     signInWithGithub: async ({locals: { supabase }}) => {
@@ -11,18 +22,18 @@ export const actions: Actions = {
         })
 
         if (requestError) {
-			console.log(requestError);
-			throw error(requestError?.status || 500, {
-				message: requestError?.message || 'Ocurrió un error'
-			});
+          console.log(requestError);
+          throw error(requestError?.status || 500, {
+            message: requestError?.message || 'Ocurrió un error'
+          });
 		}
-        if (data.url) {
-            return redirect(303, data.url)
-          }
+        if (data.url) {          
+          return redirect(303, data.url)
+        }
         else {
-            throw error(500, {
-                message: 'Ocurrió un error'
-            })
+          throw error(500, {
+              message: 'Ocurrió un error'
+          })
         }
     },
     logout: async ({ locals: { supabase } }) => {

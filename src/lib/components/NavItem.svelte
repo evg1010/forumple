@@ -7,14 +7,15 @@
 	export let thread: Tables<'threads'>;
 </script>
 
-<a
-	href="/chat/{thread.id}"
+<div
 	class="flex justify-between rounded-full hover:bg-gray-50 items-center"
 	class:bg-gray-100={$page.url.pathname === `/chat/${thread.id}`}
 >
-	<span class="font-semibold text-sm text-gray-800">{thread.name}</span>
+	<a href="/chat/{thread.id}" class="px-2 truncate">
+		<span class="font-semibold text-sm text-gray-800 truncate">{thread.name}</span>
+	</a>
 	<Button class="!p-2" color="none" size="xs"><DotsVerticalOutline class="w-6 h-6" /></Button>
 	<Dropdown>
 		<DropdownItem>Delete</DropdownItem>
 	</Dropdown>
-</a>
+</div>

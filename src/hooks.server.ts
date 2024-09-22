@@ -3,6 +3,7 @@ import { type Handle, redirect } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
 import { PUBLIC_SUPABASE_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public'
 
+
 const supabase: Handle = async ({ event, resolve }) => {
   /**
    * Creates a Supabase client specific to this server request.
@@ -62,9 +63,13 @@ const supabase: Handle = async ({ event, resolve }) => {
 }
 
 const authGuard: Handle = async ({ event, resolve }) => {
-  const { session, user } = await event.locals.safeGetSession()
+  let { session, user } = await event.locals.safeGetSession()
   event.locals.session = session
   
+  if (user) {
+    const { data } = await event.locals.supabase.from("users").select().eq("id", user.id)
+    if (data && data.length === 1) user = data[0];
+  }
   event.locals.user = user
 
   if (!event.locals.session && event.url.pathname.startsWith('/private')) {

@@ -5,7 +5,7 @@
 	import { BarsOutline } from 'flowbite-svelte-icons';
 
 	export let data;
-	const threads: Tables<'threads'>[] = data.threads;
+	const threads: Tables<'threads'>[] = data.threads || [];
 
 	// const testThreads: Tables<'threads'>[] = [
 	// 	{
@@ -58,13 +58,11 @@
 			<div id="head" class="py-2">
 				<span class="text-lg font-semibold">Chat History</span>
 			</div>
-			{#if threads}
-				<div id="list" class="flex-col gap-2">
-					{#each threads as thread}
-						<NavItem {thread} />
-					{/each}
-				</div>
-			{/if}
+			<div id="list" class="flex-col gap-2">
+				{#each threads as thread}
+					<NavItem {thread} />
+				{/each}
+			</div>
 		</div>
 	</div>
 	<slot />

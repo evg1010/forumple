@@ -1,16 +1,4 @@
 import { error, redirect, type Actions } from "@sveltejs/kit"
-import { supabase } from "$lib/supabaseClient";
-
-export async function load() {
-  console.log("HEREEEEEE");
-  
-  const { data } = await supabase.from("users").select('*');
-  console.log(data);
-  
-  return {
-    users: data ?? [],
-  };
-}
 
 export const actions: Actions = {
     signInWithGithub: async ({locals: { supabase }}) => {

@@ -42,7 +42,7 @@
 </script>
 
 <div class="flex w-full h-full">
-	<div id="sidebar" class="flex flex-col w-80 h-full border-r-2">
+	<div id="sidebar" class="flex flex-col w-80 shrink-0 h-full border-r-2">
 		<div id="app-header" class="flex items-center gap-3 px-3">
 			<Button color="alternative" size="lg" class="!p-2"><BarsOutline class="w-6 h-6" /></Button>
 			<div id="logo" class="flex gap-1 items-center">

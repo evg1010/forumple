@@ -1,38 +1,19 @@
-# create-svelte
+# TODOs:
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
-
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+- [ ] Create files for new components (feat/chat-components)
+- [ ] Create Modal to modify thread (feat/edit-thread)
+- [ ] Create Modal to delete thread (feat/delete-thread)
+- [ ] Create Modal to create new thread and button (feat/create-thread)
+- [ ] Load messages to thread (feat/load-messages)
+- [ ] Send messages with ChatInput and action (feat/send-message)
+- [ ] Autoscroll when sending messages (feat/send-message)
+- [ ] Make sure realtime works in thread (feat/send-message)
+- [ ] Highlight thread in sidebar when new messages arrive (feat/unread)
+- [ ] Create modal to upload images (feat/upload-image)
+- [ ] Send image to database and display it on messages (feat/upload-image)
+- [ ] Make replies work on messages (feat/reply-to-message)
+- [ ] Sign out of the app (feat/sign-out)
+- [ ] Create modal to edit profile (feat/edit-profile)
+- [ ] Send notifications when recieving messages in not the current thread (feat/notifications)
+- [ ] Send notifications when app is out of focus (feat/notifications)
+- [ ] Integrate notifications with permissions set by thread (feat/notifications)

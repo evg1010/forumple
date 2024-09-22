@@ -1,6 +1,6 @@
 # TODOs:
 
-- [ ] Create files for new components (feat/chat-components)
+- [x] Create files for new components (feat/chat-components)
 - [ ] Create Modal to modify thread (feat/edit-thread)
 - [ ] Create Modal to delete thread (feat/delete-thread)
 - [ ] Create Modal to create new thread and button (feat/create-thread)

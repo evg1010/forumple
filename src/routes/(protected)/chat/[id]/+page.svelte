@@ -1,64 +1,48 @@
 <script lang="ts">
 	import type { Tables } from '$lib/types/supabase';
 	import { Avatar, Button, Dropdown, DropdownItem, Input } from 'flowbite-svelte';
-	import {
-		BellOutline,
-		BellRingSolid,
-		EditOutline,
-		PaperClipOutline,
-		ArrowUpOutline
-	} from 'flowbite-svelte-icons';
+	import { BellOutline, BellRingSolid, EditOutline } from 'flowbite-svelte-icons';
 	import { invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
+	import ChatInput from '$lib/components/ChatInput.svelte';
+	import ChatContainer from '$lib/components/ChatContainer.svelte';
+	import ChatMessage from '$lib/components/ChatMessage.svelte';
+	import type { Message } from '$lib/types/types.js';
 
 	export let data;
 
-	const currentUser: Tables<'users'> = data.user;
+	const currentThreadMessages: Tables<'messages'>[] = data.current_thread_messages;
 
-	const currentThread: Tables<'threads'> = data.threads.find(
+	let messagesData: Message[] = [];
+	for (const message of currentThreadMessages) {
+		let replyMessageContent = null;
+		if (message.reply_message_id) {
+			replyMessageContent = data.current_thread_messages.find(
+				(replyMessage) => replyMessage.id === message.reply_message_id
+			)?.content;
+		}
+
+		messagesData.push({
+			id: message.id,
+			createdAt: message.created_at,
+			content: message.content,
+			reactions: message.reactions,
+			replyMessageContent: replyMessageContent,
+			user: data.current_thread_users.find((user) => user?.id === message.user_id)
+		});
+	}
+	console.log(messagesData);
+
+	const currentThread: Tables<'threads'> = data.threads?.find(
 		(thread) => thread.id === $page.params.id
 	);
-	let editMode = false;
 </script>
 
 <div id="main" class="flex flex-col w-full h-full">
 	<div id="chat-header" class="flex px-4 py-1.5 justify-between items-center border-b-2">
 		<div id="head" class="flex items-center gap-2">
 			<span class="text-lg font-semibold text-gray-700">{currentThread.name}</span>
-			<Button
-				class="!p-2"
-				pill={true}
-				color="none"
-				on:click={async () => {
-					editMode = true;
-				}}><EditOutline /></Button
-			>
-			{#if editMode}
-				<Input
-					class="rounded-full px-3"
-					value={currentThread.name}
-					on:input={(e) => {
-						currentThread.name = e.target.value;
-					}}
-				/>
-				<Button
-					class="!p-2"
-					pill={true}
-					color="alternative"
-					on:click={async () => {
-						editMode = false;
-						// Send the updated thread name to the server
-						const formData = new FormData();
-						formData.append('name', currentThread.name);
-						await fetch(`?/updateThreadName`, {
-							method: 'POST',
-							body: formData
-						});
-						// Refresh the page to display the updated thread name
-						await invalidateAll();
-					}}>Save</Button
-				>
-			{/if}
+			<Button class="!p-2" pill={true} color="none"><EditOutline /></Button>
 		</div>
 		<div id="tail" class="flex items-center gap-2">
 			<Button
@@ -77,7 +61,6 @@
 						},
 						body: formData.toString()
 					});
-					// const url = $page.url.pathname;
 					await invalidateAll();
 				}}
 			>
@@ -87,18 +70,18 @@
 					<BellOutline />
 				{/if}
 			</Button>
-			<Avatar src={currentUser.avatar_url} />
+			<Avatar src={data.user?.avatar_url ?? undefined} />
 			<Dropdown>
 				<DropdownItem>Sign Out</DropdownItem>
 			</Dropdown>
 		</div>
 	</div>
-	<div id="chat" class="flex flex-col items-center justify-center w-full h-full">
-		<div id="chat-container" class="flex flex-col w-full h-full p-6 md:p-20"></div>
-		<div id="input-zone" class="flex gap-2 px-5 py-3 w-full items-center border-t-2">
-			<Input class="rounded-full px-3" placeholder="Type your message here ..." />
-			<Button class="!p-2" pill={true} color="alternative"><PaperClipOutline /></Button>
-			<Button class="!p-2" pill={true} color="alternative"><ArrowUpOutline /></Button>
-		</div>
+	<div id="chat" class="flex flex-col w-full h-screen">
+		<ChatContainer>
+			{#each messagesData as message}
+				<ChatMessage {message} is_current_user={message.user.id === data.user?.id} />
+			{/each}
+		</ChatContainer>
+		<ChatInput />
 	</div>
 </div>

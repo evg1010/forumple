@@ -1,15 +1,22 @@
 <script lang="ts">
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { Button } from 'flowbite-svelte';
 	import { ArrowUpOutline, PaperClipOutline } from 'flowbite-svelte-icons';
 
 	let message = '';
 	let textareaElement: HTMLTextAreaElement | null = null;
-	const dispatch = createEventDispatcher();
 
 	function handleSubmit() {
 		if (message.trim()) {
-			dispatch('sendMessage', message.trim());
+			fetch(`?/createMessage`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				body: new URLSearchParams({
+					content: message.trim()
+				}).toString()
+			});
 			message = '';
 			autoResize(); // Reset the height after sending the message
 		}

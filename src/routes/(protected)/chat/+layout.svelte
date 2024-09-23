@@ -3,42 +3,48 @@
 	import type { Tables } from '$lib/types/supabase';
 	import { Button } from 'flowbite-svelte';
 	import { BarsOutline } from 'flowbite-svelte-icons';
+	import { onMount } from 'svelte';
+	import { supabase } from '$lib/supabaseClient.js';
 
 	export let data;
-	const threads: Tables<'threads'>[] = data.threads || [];
+	let threads: Tables<'threads'>[] = data.threads || [];
 
-	// const testThreads: Tables<'threads'>[] = [
-	// 	{
-	// 		id: 'akhj1l3h2',
-	// 		name: '🖌️ Design Chat',
-	// 		created_at: 'morning day sunshine',
-	// 		description: 'Desdeccsfds'
-	// 	},
-	// 	{
-	// 		id: 'thread2',
-	// 		name: '👩‍💻 Development Discussion hgjhgjhg',
-	// 		created_at: 'afternoon',
-	// 		description: 'Discuss development-related topics'
-	// 	},
-	// 	{
-	// 		id: 'thread3',
-	// 		name: '📢 Marketing Meeting',
-	// 		created_at: 'yesterday',
-	// 		description: 'Discuss marketing strategies'
-	// 	},
-	// 	{
-	// 		id: 'thread4',
-	// 		name: '💼 Sales Chat',
-	// 		created_at: 'last week',
-	// 		description: 'Discuss sales-related topics'
-	// 	},
-	// 	{
-	// 		id: 'thread5',
-	// 		name: '🤵 Customer Support',
-	// 		created_at: 'this morning',
-	// 		description: 'Discuss customer support-related topics'
-	// 	}
-	// ];
+	onMount(() => {
+		// Set up realtime subscription
+		const subscription = supabase
+			.channel('threads')
+			.on(
+				'postgres_changes',
+				{ event: 'INSERT', schema: 'public', table: 'threads' },
+				(payload) => {
+					const new_thread = payload.new as Tables<'threads'>;
+					threads = [new_thread, ...threads];
+				}
+			)
+			.on(
+				'postgres_changes',
+				{ event: 'UPDATE', schema: 'public', table: 'threads' },
+				(payload) => {
+					const updated_thread = payload.new as Tables<'threads'>;
+					const index = threads.findIndex((thread) => thread.id === updated_thread.id);
+					threads[index] = updated_thread;
+				}
+			)
+			.on(
+				'postgres_changes',
+				{ event: 'DELETE', schema: 'public', table: 'threads' },
+				(payload) => {
+					const deleted_thread = payload.old as Tables<'threads'>;
+					const index = threads.findIndex((thread) => thread.id === deleted_thread.id);
+					threads.splice(index, 1);
+				}
+			)
+			.subscribe();
+
+		return () => {
+			subscription.unsubscribe();
+		};
+	});
 </script>
 
 <div class="flex w-full h-full">

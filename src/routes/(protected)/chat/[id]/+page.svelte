@@ -2,12 +2,10 @@
 	import type { Tables } from '$lib/types/supabase';
 	import { Avatar, Button, Dropdown, DropdownItem, Input } from 'flowbite-svelte';
 	import { BellOutline, BellRingSolid, EditOutline } from 'flowbite-svelte-icons';
-	import { invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
 	import ChatInput from '$lib/components/ChatInput.svelte';
 	import ChatContainer from '$lib/components/ChatContainer.svelte';
 	import ChatMessage from '$lib/components/ChatMessage.svelte';
-	import type { Message } from '$lib/types/types.js';
 	import { onMount } from 'svelte';
 	import { supabase } from '$lib/supabaseClient.js';
 	import { parseMessage } from '$lib/utils/messages';
@@ -17,6 +15,9 @@
 	let notifications_enabled: boolean = data.notifications_enabled;
 	let current_thread_users: Tables<'users'>[] = data.current_thread_users;
 	const currentThreadMessages = writable(data.current_thread_messages);
+	let currentThread: Tables<'threads'> = data.threads?.find(
+		(thread) => thread.id === $page.params.id
+	);
 
 	onMount(() => {
 		// Set up realtime subscription
@@ -55,16 +56,22 @@
 					});
 				}
 			})
+			.on(
+				'postgres_changes',
+				{ event: 'UPDATE', schema: 'public', table: 'threads' },
+				(payload) => {
+					const new_thread = payload.new as Tables<'threads'>;
+					if (new_thread.id === $page.params.id) {
+						currentThread = new_thread;
+					}
+				}
+			)
 			.subscribe();
 
 		return () => {
 			subscription.unsubscribe();
 		};
 	});
-
-	const currentThread: Tables<'threads'> = data.threads?.find(
-		(thread) => thread.id === $page.params.id
-	);
 
 	$: messages = $currentThreadMessages.map((message) =>
 		parseMessage(message, $currentThreadMessages, current_thread_users)

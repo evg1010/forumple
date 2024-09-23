@@ -7,7 +7,7 @@
 - [x] Load messages to thread (feat/load-messages)
 - [x] Send messages with ChatInput and action (feat/send-message)
 - [ ] Autoscroll when sending messages (feat/send-message)
-- [ ] Make sure realtime works in thread (feat/realtime-messages)
+- [x] Make sure realtime works in thread (feat/realtime-messages)
 - [ ] Highlight thread in sidebar when new messages arrive (feat/unread)
 - [ ] Create modal to upload images (feat/upload-image)
 - [ ] Send image to database and display it on messages (feat/upload-image)

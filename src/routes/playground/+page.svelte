@@ -30,18 +30,18 @@
 	<ChatContainer>
 		<ChatMessage
 			message={test_messages[0]}
-			current_user={true}
+			is_current_user={true}
 			image={'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/karen-nelson.png'}
 		/>
 		<ChatMessage message={test_messages[0]} />
-		<ChatMessage message={test_messages[1]} current_user={true} reply_to={test_messages[0]} />
+		<ChatMessage message={test_messages[1]} is_current_user={true} reply_to={test_messages[0]} />
 		<ChatMessage
 			message={test_messages[0]}
-			current_user={true}
+			is_current_user={true}
 			image={'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/karen-nelson.png'}
 		/>
 		<ChatMessage message={test_messages[0]} />
-		<ChatMessage message={test_messages[1]} current_user={true} reply_to={test_messages[0]} />
+		<ChatMessage message={test_messages[1]} is_current_user={true} reply_to={test_messages[0]} />
 	</ChatContainer>
 	<ChatInput />
 </div>

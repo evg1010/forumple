@@ -8,34 +8,81 @@
 	import ChatContainer from '$lib/components/ChatContainer.svelte';
 	import ChatMessage from '$lib/components/ChatMessage.svelte';
 	import type { Message } from '$lib/types/types.js';
+	import { onMount } from 'svelte';
+	import { supabase } from '$lib/supabaseClient.js';
+	import { parseMessage } from '$lib/utils/messages';
+	import { writable } from 'svelte/store';
 
 	export let data;
+	let notifications_enabled: boolean = data.notifications_enabled;
+	let current_thread_users: Tables<'users'>[] = data.current_thread_users;
+	const currentThreadMessages = writable(data.current_thread_messages);
 
-	const currentThreadMessages: Tables<'messages'>[] = data.current_thread_messages;
+	onMount(() => {
+		// Set up realtime subscription
+		const subscription = supabase
+			.channel('messages')
+			.on(
+				'postgres_changes',
+				{ event: 'UPDATE', schema: 'public', table: 'user_thread' },
+				(payload) => {
+					notifications_enabled = payload.new.notifications_enabled;
+				}
+			)
+			.on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, (payload) => {
+				if (payload.eventType === 'INSERT') {
+					const message = payload.new as Tables<'messages'>;
+					currentThreadMessages.update((messages) => [...messages, message]);
+				}
+				if (payload.eventType === 'UPDATE') {
+					const message = payload.new as Tables<'messages'>;
+					currentThreadMessages.update((messages) => {
+						const index = messages.findIndex((m) => m.id === message.id);
+						if (index !== -1) {
+							messages[index] = message;
+						}
+						return messages;
+					});
+				}
+				if (payload.eventType === 'DELETE') {
+					const message = payload.old as Tables<'messages'>;
+					currentThreadMessages.update((messages) => {
+						const index = messages.findIndex((m) => m.id === message.id);
+						if (index !== -1) {
+							messages.splice(index, 1);
+						}
+						return messages;
+					});
+				}
+			})
+			.subscribe();
 
-	let messagesData: Message[] = [];
-	for (const message of currentThreadMessages) {
-		let replyMessageContent = null;
-		if (message.reply_message_id) {
-			replyMessageContent = data.current_thread_messages.find(
-				(replyMessage) => replyMessage.id === message.reply_message_id
-			)?.content;
-		}
-
-		messagesData.push({
-			id: message.id,
-			createdAt: message.created_at,
-			content: message.content,
-			reactions: message.reactions,
-			replyMessageContent: replyMessageContent,
-			user: data.current_thread_users.find((user) => user?.id === message.user_id)
-		});
-	}
-	console.log(messagesData);
+		return () => {
+			subscription.unsubscribe();
+		};
+	});
 
 	const currentThread: Tables<'threads'> = data.threads?.find(
 		(thread) => thread.id === $page.params.id
 	);
+
+	$: messages = $currentThreadMessages.map((message) =>
+		parseMessage(message, $currentThreadMessages, current_thread_users)
+	);
+
+	async function handleNotificationsOnClick() {
+		const newValue = !notifications_enabled;
+		const formData = new URLSearchParams({
+			notifications_enabled: newValue.toString()
+		});
+		await fetch(`?/toggleNotifications`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			},
+			body: formData.toString()
+		});
+	}
 </script>
 
 <div id="main" class="flex flex-col w-full h-full">
@@ -45,26 +92,8 @@
 			<Button class="!p-2" pill={true} color="none"><EditOutline /></Button>
 		</div>
 		<div id="tail" class="flex items-center gap-2">
-			<Button
-				class="!p-2"
-				pill={true}
-				color="none"
-				on:click={async () => {
-					const newValue = !data.notifications_enabled;
-					const formData = new URLSearchParams({
-						notifications_enabled: newValue.toString()
-					});
-					await fetch(`?/toggleNotifications`, {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/x-www-form-urlencoded'
-						},
-						body: formData.toString()
-					});
-					await invalidateAll();
-				}}
-			>
-				{#if data.notifications_enabled}
+			<Button class="!p-2" pill={true} color="none" on:click={handleNotificationsOnClick}>
+				{#if notifications_enabled}
 					<BellRingSolid />
 				{:else}
 					<BellOutline />
@@ -78,7 +107,7 @@
 	</div>
 	<div id="chat" class="flex flex-col w-full h-screen">
 		<ChatContainer>
-			{#each messagesData as message}
+			{#each messages as message}
 				<ChatMessage {message} is_current_user={message.user.id === data.user?.id} />
 			{/each}
 		</ChatContainer>

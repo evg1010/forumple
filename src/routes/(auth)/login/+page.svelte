@@ -6,7 +6,7 @@
 </script>
 
 <div
-	class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-fuchsia-500 via-rose-400 to-pink-200"
+	class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-pink-800 via-rose-400 to-pink-200"
 >
 	<Card class="w-fit mx-auto p-8">
 		<Heading class="text-3xl font-bold text-center mb-4">Iniciar sesión</Heading>

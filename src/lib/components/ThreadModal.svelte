@@ -8,9 +8,16 @@
 	export let title = 'Thread';
 	export let current_user: Tables<'users'> | null = null;
 	export let users: Tables<'users'>[];
-	export let thread: Tables<'threads'> = { id: '', name: '', created_at: '', description: '' };
+	export let thread: Tables<'threads'> = {
+		id: '',
+		name: '',
+		last_modified: '',
+		description: '',
+		active: false
+	};
 	export let user_threads: Tables<'user_thread'>[];
 	export let everyone: boolean = false;
+	let isPublicThread: boolean = thread.id === 'fc01be15-e093-4623-83ef-7c463f1ffc36' ? true : false;
 
 	let chosen_user_threads: Tables<'user_thread'>[] = [];
 
@@ -19,11 +26,14 @@
 		user_threads = user_threads.filter((user_thread) => user_thread.user_id !== current_user.id);
 	}
 	if (thread.id) {
+		if (isPublicThread) {
+			user_threads = [];
+			users = [];
+			everyone = true;
+		}
 		user_threads = user_threads.filter((user_thread) => user_thread.thread_id === thread.id);
 		chosen_user_threads = user_threads.filter((user_thread) => user_thread.thread_id === thread.id);
 	}
-	console.log('USER THREADS AT START: ', user_threads);
-	console.log('CHOOSEN AT START: ', chosen_user_threads);
 
 	function handleChange(user_id: string, state: boolean) {
 		const existingRelation = chosen_user_threads.find(
@@ -34,8 +44,7 @@
 			const new_user_thread: Tables<'user_thread'> = {
 				user_id,
 				thread_id: thread.id,
-				notifications_enabled: true,
-				last_modified: new Date().toISOString()
+				notifications_enabled: true
 			};
 			if (!existingRelation) chosen_user_threads = [...chosen_user_threads, new_user_thread];
 		} else {
@@ -56,15 +65,13 @@
 				.select();
 			if (data) {
 				const new_thread = data[0];
-				console.log('NEW THREAD: ', new_thread);
 
 				if (everyone) {
 					for (const user of users) {
 						chosen_user_threads.push({
 							user_id: user.id,
 							thread_id: new_thread.id,
-							notifications_enabled: true,
-							last_modified: new Date().toISOString()
+							notifications_enabled: true
 						});
 					}
 				}
@@ -73,10 +80,8 @@
 				chosen_user_threads.push({
 					user_id: current_user.id,
 					thread_id: new_thread.id,
-					notifications_enabled: true,
-					last_modified: new Date().toISOString()
+					notifications_enabled: true
 				});
-				console.log('CHOSEN: ', chosen_user_threads);
 
 				for (const user_thread of chosen_user_threads) {
 					user_thread.thread_id = new_thread.id;
@@ -91,9 +96,6 @@
 
 		// Update existing thread
 		if (thread.id) {
-			console.log('USER THREADS: ', user_threads);
-			console.log('CHOOSEN: ', chosen_user_threads);
-
 			const { error } = await supabase
 				.from('threads')
 				.update({ name: thread.name, description: thread.description })
@@ -105,8 +107,7 @@
 						chosen_user_threads.push({
 							user_id: user.id,
 							thread_id: thread.id,
-							notifications_enabled: true,
-							last_modified: new Date().toISOString()
+							notifications_enabled: true
 						});
 					}
 				}
@@ -129,8 +130,6 @@
 				);
 
 				// Delete old relations
-				console.log('DELTETE: ', to_delete);
-
 				for (const user_thread of to_delete) {
 					await supabase
 						.from('user_thread')
@@ -140,8 +139,6 @@
 				}
 
 				// Insert new relations
-				console.log('INSERT: ', to_insert);
-
 				for (const chosen_user_thread of to_insert) {
 					await supabase.from('user_thread').insert(chosen_user_thread);
 				}
@@ -162,7 +159,7 @@
 				<UsersGroupOutline class="w-6 h-6" />
 				<span>Everyone</span>
 			</div>
-			<Toggle bind:checked={everyone} />
+			<Toggle bind:checked={everyone} disabled={isPublicThread} />
 		</div>
 		<hr class="border-gray-300" />
 		{#each users as user}

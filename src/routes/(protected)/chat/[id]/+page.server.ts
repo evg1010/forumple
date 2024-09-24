@@ -2,6 +2,7 @@ import type { PageServerLoad } from './$types';
 import { supabase } from '$lib/supabaseClient';
 import { redirect, error as svelteError, type Actions } from '@sveltejs/kit';
 import type { Tables } from '$lib/types/supabase';
+import { PUBLIC_BUCKET_NAME } from '$env/static/public';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	let notifications_enabled = false;
@@ -68,16 +69,21 @@ export const actions: Actions = {
 	createMessage: async ({ locals, params, request }) => {
 		if (!locals.user || !params.id) return svelteError(401, 'Unauthorized');
 		const formData = await request.formData();
+		console.log(formData);
+
 		const content = formData.get('content');
+		const image_url = (formData.get('image_url') as string) || null;
+		console.log('IMAGE: ', image_url);
 
 		if (content !== null) {
 			const { error } = await supabase.from('messages').insert({
 				content: content as string,
 				thread_id: params.id,
 				user_id: locals.user.id,
-				reply_message_id: null
+				reply_message_id: null,
+				image_url: image_url
 			});
-			console.log('Error creating message: ', error?.message);
+			if (error) console.log('Error creating message: ', error?.message);
 			console.log('Message created');
 		}
 	},
@@ -91,5 +97,38 @@ export const actions: Actions = {
 		}
 		console.log('SIGN OUT');
 		redirect(302, '/login');
+	},
+	upload_image: async ({ locals, params, request }) => {
+		console.log('HIIIIIIIIIII');
+
+		if (!locals.user || !params.id) return svelteError(401, 'Unauthorized');
+		const formData = await request.formData();
+		const file = formData.get('file') as File;
+		console.log(file);
+
+		const user_id = locals.user.id;
+		const thread_id = params.id;
+		if (file !== null) {
+			console.log('FILE NOT NULL');
+
+			const { data, error } = await supabase.storage
+				.from(PUBLIC_BUCKET_NAME)
+				.upload(`${user_id}/${thread_id}/${file.name}`, file, {
+					upsert: true
+				});
+			if (error) console.log('Error uploading image: ', error.message);
+			console.log('Image uploaded to storage');
+
+			if (data) {
+				const {
+					data: { publicUrl }
+				} = supabase.storage.from(PUBLIC_BUCKET_NAME).getPublicUrl(data.path);
+				console.log('PUBLIC_URL', publicUrl);
+
+				return {
+					image_url: publicUrl as string
+				};
+			}
+		}
 	}
 };

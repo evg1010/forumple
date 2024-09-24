@@ -14,6 +14,7 @@ export type Database = {
           content: string
           created_at: string
           id: string
+          image_url: string | null
           reactions: Json[] | null
           reply_message_id: string | null
           thread_id: string
@@ -23,6 +24,7 @@ export type Database = {
           content: string
           created_at?: string
           id?: string
+          image_url?: string | null
           reactions?: Json[] | null
           reply_message_id?: string | null
           thread_id?: string
@@ -32,6 +34,7 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          image_url?: string | null
           reactions?: Json[] | null
           reply_message_id?: string | null
           thread_id?: string

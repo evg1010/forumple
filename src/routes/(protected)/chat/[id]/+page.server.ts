@@ -72,14 +72,14 @@ export const actions: Actions = {
 
 		const content = formData.get('content');
 		const image_url = (formData.get('image_url') as string) || null;
-		console.log('IMAGE: ', image_url);
+		const reply_message_id = (formData.get('reply_message_id') as string) || null;
 
 		if (content !== null) {
 			const { error } = await supabase.from('messages').insert({
 				content: content as string,
 				thread_id: params.id,
 				user_id: locals.user.id,
-				reply_message_id: null,
+				reply_message_id: reply_message_id,
 				image_url: image_url
 			});
 			if (error) console.log('Error creating message: ', error?.message);

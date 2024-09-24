@@ -12,6 +12,7 @@
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 	import type { Message } from '$lib/types/types.js';
+	import ThreadModal from '$lib/components/ThreadModal.svelte';
 
 	export let data;
 	let notifications_enabled: boolean = data.notifications_enabled;
@@ -108,6 +109,8 @@
 	function handleReply(event: CustomEvent<Message>) {
 		reply_message = event.detail;
 	}
+
+	let modalOpen = false;
 </script>
 
 <div id="main" class="flex flex-col w-full h-screen">
@@ -117,7 +120,17 @@
 	>
 		<div id="head" class="flex items-center gap-2">
 			<span class="text-lg font-semibold text-gray-700">{currentThread.name}</span>
-			<Button class="!p-2" color="alternative"><EditOutline /></Button>
+			<Button color="alternative" size="sm" class="!p-2" on:click={() => (modalOpen = true)}>
+				<EditOutline />
+			</Button>
+			<ThreadModal
+				current_user={data.current_user}
+				users={data.users || []}
+				title={'Edit Thread'}
+				user_threads={data.user_thread_relationships || []}
+				thread={currentThread}
+				bind:open={modalOpen}
+			/>
 		</div>
 		<div id="tail" class="flex items-center gap-2">
 			<!-- <Button class="!p-2" pill={true} color="none" on:click={handleNotificationsOnClick}>

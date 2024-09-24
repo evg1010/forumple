@@ -16,15 +16,17 @@
 
 	if (current_user) {
 		users = users.filter((user) => user.id !== current_user.id);
-
 		user_threads = user_threads.filter((user_thread) => user_thread.user_id !== current_user.id);
 	}
 	if (thread.id) {
+		user_threads = user_threads.filter((user_thread) => user_thread.thread_id === thread.id);
 		chosen_user_threads = user_threads.filter((user_thread) => user_thread.thread_id === thread.id);
 	}
+	console.log('USER THREADS AT START: ', user_threads);
+	console.log('CHOOSEN AT START: ', chosen_user_threads);
 
 	function handleChange(user_id: string, state: boolean) {
-		const existingRelation = user_threads.find(
+		const existingRelation = chosen_user_threads.find(
 			(relation) => relation.user_id === user_id && relation.thread_id === thread.id
 		);
 
@@ -35,20 +37,16 @@
 				notifications_enabled: true,
 				last_modified: new Date().toISOString()
 			};
-			if (!existingRelation) user_threads = [...user_threads, new_user_thread];
-
-			chosen_user_threads.push(new_user_thread);
+			if (!existingRelation) chosen_user_threads = [...chosen_user_threads, new_user_thread];
 		} else {
 			if (existingRelation) {
-				user_threads = user_threads.filter(
+				chosen_user_threads = chosen_user_threads.filter(
 					(relation) => relation.user_id !== user_id || relation.thread_id !== thread.id
 				);
 			}
-			chosen_user_threads = chosen_user_threads.filter(
-				(relation) => relation.user_id !== user_id || relation.thread_id !== thread.id
-			);
 		}
 	}
+
 	async function handleOnClick() {
 		// Create new thread
 		if (!thread.id && current_user) {
@@ -56,35 +54,102 @@
 				.from('threads')
 				.insert({ name: thread.name, description: thread.description })
 				.select();
-			const new_thread = data[0];
-			console.log(new_thread);
+			if (data) {
+				const new_thread = data[0];
+				console.log('NEW THREAD: ', new_thread);
 
-			if (everyone) {
-				for (const user of users) {
-					chosen_user_threads.push({
-						user_id: user.id,
-						thread_id: new_thread.id,
-						notifications_enabled: true,
-						last_modified: new Date().toISOString()
-					});
+				if (everyone) {
+					for (const user of users) {
+						chosen_user_threads.push({
+							user_id: user.id,
+							thread_id: new_thread.id,
+							notifications_enabled: true,
+							last_modified: new Date().toISOString()
+						});
+					}
 				}
-			}
 
-			// Add the current user relation
-			chosen_user_threads.push({
-				user_id: current_user.id,
-				thread_id: new_thread.id,
-				notifications_enabled: true,
-				last_modified: new Date().toISOString()
-			});
-			console.log(chosen_user_threads);
+				// Add the current user relation
+				chosen_user_threads.push({
+					user_id: current_user.id,
+					thread_id: new_thread.id,
+					notifications_enabled: true,
+					last_modified: new Date().toISOString()
+				});
+				console.log('CHOSEN: ', chosen_user_threads);
 
-			for (const user_thread of chosen_user_threads) {
-				await supabase.from('user_thread').insert(user_thread);
-			}
+				for (const user_thread of chosen_user_threads) {
+					user_thread.thread_id = new_thread.id;
+
+					const { error } = await supabase.from('user_thread').insert(user_thread);
+					if (error) console.log(error);
+				}
+			} else console.log('Error creating thread');
+
+			chosen_user_threads = [];
+		}
+
+		// Update existing thread
+		if (thread.id) {
+			console.log('USER THREADS: ', user_threads);
+			console.log('CHOOSEN: ', chosen_user_threads);
+
+			const { error } = await supabase
+				.from('threads')
+				.update({ name: thread.name, description: thread.description })
+				.eq('id', thread.id);
+
+			if (!error) {
+				if (everyone) {
+					for (const user of users) {
+						chosen_user_threads.push({
+							user_id: user.id,
+							thread_id: thread.id,
+							notifications_enabled: true,
+							last_modified: new Date().toISOString()
+						});
+					}
+				}
+				// Identify differences between the old user_threads and the new chosen_user_threads
+				const to_delete = user_threads.filter(
+					(user_thread) =>
+						!chosen_user_threads.find(
+							(chosen_user_thread) =>
+								chosen_user_thread.user_id === user_thread.user_id &&
+								chosen_user_thread.thread_id === user_thread.thread_id
+						)
+				);
+				const to_insert = chosen_user_threads.filter(
+					(chosen_user_thread) =>
+						!user_threads.find(
+							(user_thread) =>
+								user_thread.user_id === chosen_user_thread.user_id &&
+								user_thread.thread_id === chosen_user_thread.thread_id
+						)
+				);
+
+				// Delete old relations
+				console.log('DELTETE: ', to_delete);
+
+				for (const user_thread of to_delete) {
+					await supabase
+						.from('user_thread')
+						.delete()
+						.eq('user_id', user_thread.user_id)
+						.eq('thread_id', user_thread.thread_id);
+				}
+
+				// Insert new relations
+				console.log('INSERT: ', to_insert);
+
+				for (const chosen_user_thread of to_insert) {
+					await supabase.from('user_thread').insert(chosen_user_thread);
+				}
+			} else console.log(error);
 		}
 
 		open = false;
+		everyone = false;
 	}
 </script>
 
@@ -108,7 +173,7 @@
 				</div>
 				<Toggle
 					checked={everyone ||
-						user_threads.some(
+						chosen_user_threads.some(
 							(relation) => relation.user_id === user.id && relation.thread_id === thread.id
 						)}
 					value={user.id}

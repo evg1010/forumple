@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { supabase } from '$lib/supabaseClient';
-import { redirect, error as svelteError, type Actions } from '@sveltejs/kit';
+import { json, redirect, error as svelteError, type Actions } from '@sveltejs/kit';
 import type { Tables } from '$lib/types/supabase';
 import { PUBLIC_BUCKET_NAME } from '$env/static/public';
 
@@ -69,7 +69,6 @@ export const actions: Actions = {
 	createMessage: async ({ locals, params, request }) => {
 		if (!locals.user || !params.id) return svelteError(401, 'Unauthorized');
 		const formData = await request.formData();
-		console.log(formData);
 
 		const content = formData.get('content');
 		const image_url = (formData.get('image_url') as string) || null;
@@ -99,23 +98,19 @@ export const actions: Actions = {
 		redirect(302, '/login');
 	},
 	upload_image: async ({ locals, params, request }) => {
-		console.log('HIIIIIIIIIII');
-
 		if (!locals.user || !params.id) return svelteError(401, 'Unauthorized');
 		const formData = await request.formData();
 		const file = formData.get('file') as File;
-		console.log(file);
 
 		const user_id = locals.user.id;
 		const thread_id = params.id;
 		if (file !== null) {
-			console.log('FILE NOT NULL');
-
 			const { data, error } = await supabase.storage
 				.from(PUBLIC_BUCKET_NAME)
 				.upload(`${user_id}/${thread_id}/${file.name}`, file, {
 					upsert: true
 				});
+
 			if (error) console.log('Error uploading image: ', error.message);
 			console.log('Image uploaded to storage');
 
@@ -123,11 +118,10 @@ export const actions: Actions = {
 				const {
 					data: { publicUrl }
 				} = supabase.storage.from(PUBLIC_BUCKET_NAME).getPublicUrl(data.path);
-				console.log('PUBLIC_URL', publicUrl);
 
-				return {
-					image_url: publicUrl as string
-				};
+				return json({
+					image_url: publicUrl
+				});
 			}
 		}
 	}

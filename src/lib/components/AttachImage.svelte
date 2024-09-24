@@ -20,22 +20,19 @@
 		document.getElementById('file-upload')?.click();
 	}
 
-	function handleUpload() {
+	async function handleUpload() {
 		if (file) {
 			const formData = new FormData();
 			formData.append('file', file);
 
 			fetch(`?/upload_image`, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
-				},
 				body: formData
 			})
 				.then((response) => response.json())
 				.then((data) => {
 					const image_url = data.image_url;
-					console.log(image_url);
+					console.log('IMAGE: ', image_url);
 
 					if (image_url) {
 						fetch(`?/createMessage`, {

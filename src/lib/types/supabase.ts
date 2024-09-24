@@ -84,16 +84,19 @@ export type Database = {
       }
       user_thread: {
         Row: {
+          last_modified: string
           notifications_enabled: boolean
           thread_id: string
           user_id: string
         }
         Insert: {
+          last_modified?: string
           notifications_enabled?: boolean
           thread_id?: string
           user_id?: string
         }
         Update: {
+          last_modified?: string
           notifications_enabled?: boolean
           thread_id?: string
           user_id?: string

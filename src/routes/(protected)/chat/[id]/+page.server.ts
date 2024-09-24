@@ -118,10 +118,10 @@ export const actions: Actions = {
 				const {
 					data: { publicUrl }
 				} = supabase.storage.from(PUBLIC_BUCKET_NAME).getPublicUrl(data.path);
-
-				return json({
+				console.log('Image public url: ', publicUrl);
+				return {
 					image_url: publicUrl
-				});
+				};
 			}
 		}
 	}

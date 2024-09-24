@@ -69,15 +69,18 @@ export const actions: Actions = {
 		if (!locals.user || !params.id) return svelteError(401, 'Unauthorized');
 		const formData = await request.formData();
 		const content = formData.get('content');
+		const image_url = (formData.get('image_url') as string) || null;
+		const reply_message_id = (formData.get('reply_message_id') as string) || null;
 
 		if (content !== null) {
 			const { error } = await supabase.from('messages').insert({
 				content: content as string,
 				thread_id: params.id,
 				user_id: locals.user.id,
-				reply_message_id: null
+				reply_message_id: reply_message_id,
+				image_url: image_url
 			});
-			console.log('Error creating message: ', error?.message);
+			if (error) console.log('Error creating message: ', error?.message);
 			console.log('Message created');
 		}
 	},

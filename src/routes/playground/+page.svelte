@@ -60,12 +60,8 @@
 		{
 			user_id: '1',
 			thread_id: '1',
-			notifications_enabled: true // add this property if it's required by the type
-		},
-		{
-			user_id: '2',
-			thread_id: '1',
-			notifications_enabled: true // add this property if it's required by the type
+			notifications_enabled: true,
+			last_modified: 'lklk'
 		}
 	];
 
@@ -82,25 +78,10 @@
 			users={test_users}
 			title={'Create Thread'}
 			thread={test_thread[0]}
-			user_thread={test_user_threads}
+			user_threads={test_user_threads}
 			bind:open={modalOpen}
 		/>
 	</div>
-	<ChatContainer>
-		<ChatMessage
-			message={test_messages[0]}
-			is_current_user={true}
-			image={'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/karen-nelson.png'}
-		/>
-		<ChatMessage message={test_messages[0]} />
-		<ChatMessage message={test_messages[1]} is_current_user={true} reply_to={test_messages[0]} />
-		<ChatMessage
-			message={test_messages[0]}
-			is_current_user={true}
-			image={'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/karen-nelson.png'}
-		/>
-		<ChatMessage message={test_messages[0]} />
-		<ChatMessage message={test_messages[1]} is_current_user={true} reply_to={test_messages[0]} />
-	</ChatContainer>
+	<ChatContainer></ChatContainer>
 	<ChatInput />
 </div>

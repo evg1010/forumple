@@ -19,6 +19,7 @@
 	let currentThread: Tables<'threads'> = data.threads?.find(
 		(thread) => thread.id === $page.params.id
 	);
+	console.log(currentThread);
 
 	onMount(() => {
 		// Set up realtime subscription
@@ -117,7 +118,7 @@
 					<BellOutline />
 				{/if}
 			</Button>
-			<Avatar src={data.user?.avatar_url ?? undefined} />
+			<Avatar src={data.current_user?.avatar_url ?? undefined} />
 			<Dropdown>
 				<DropdownItem on:click={handleSignOut}>Sign Out</DropdownItem>
 			</Dropdown>
@@ -126,7 +127,7 @@
 	<div id="chat" class="flex flex-col w-full h-screen">
 		<ChatContainer>
 			{#each messages as message}
-				<ChatMessage {message} is_current_user={message.user.id === data.user?.id} />
+				<ChatMessage {message} is_current_user={message.user.id === data.current_user?.id} />
 			{/each}
 		</ChatContainer>
 		<ChatInput />

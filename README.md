@@ -1,9 +1,9 @@
 # TODOs:
 
 - [x] Create files for new components (feat/chat-components)
-- [ ] Create Modal to modify thread (feat/edit-thread)
+- [-] Create Modal to modify thread (feat/edit-thread)
 - [ ] Create Modal to delete thread (feat/delete-thread)
-- [ ] Create Modal to create new thread and button (feat/create-thread)
+- [-] Create Modal to create new thread and button (feat/create-thread)
 - [x] Load messages to thread (feat/load-messages)
 - [x] Send messages with ChatInput and action (feat/send-message)
 - [ ] Autoscroll when sending messages (feat/send-message)
@@ -12,7 +12,7 @@
 - [ ] Create modal to upload images (feat/upload-image)
 - [ ] Send image to database and display it on messages (feat/upload-image)
 - [-] Make replies work on messages (feat/reply-to-message)
-- [-] Sign out of the app (feat/sign-out)
+- [x] Sign out of the app (feat/sign-out)
 - [ ] Create modal to edit profile (feat/edit-profile)
 - [ ] Send notifications when recieving messages in not the current thread (feat/notifications)
 - [ ] Send notifications when app is out of focus (feat/notifications)

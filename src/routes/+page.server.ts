@@ -1,11 +1,12 @@
 import { error, redirect, type Actions } from '@sveltejs/kit';
+import { ORIGIN } from '$env/static/private';
 
 export const actions: Actions = {
 	signInWithGithub: async ({ locals: { supabase } }) => {
 		const { data, error: requestError } = await supabase.auth.signInWithOAuth({
 			provider: 'github',
 			options: {
-				redirectTo: 'http://localhost:5173/api/auth-callback'
+				redirectTo: `${ORIGIN}/api/auth-callback`
 			}
 		});
 

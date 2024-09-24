@@ -8,14 +8,14 @@
 	import ChatMessage from '$lib/components/ChatMessage.svelte';
 	import { onMount } from 'svelte';
 	import { supabase } from '$lib/supabaseClient.js';
-	import { parseMessage } from '$lib/utils/messages';
+	import { parseMessage } from '$lib/utils/utils';
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 	import type { Message } from '$lib/types/types.js';
 	import ThreadModal from '$lib/components/ThreadModal.svelte';
 
 	export let data;
-	let notifications_enabled: boolean = data.notifications_enabled;
+	// let notifications_enabled: boolean = data.notifications_enabled;
 	let current_thread_users: Tables<'users'>[] = data.current_thread_users;
 	const currentThreadMessages = writable(data.current_thread_messages);
 	let currentThread: Tables<'threads'> = data.threads?.find(
@@ -82,20 +82,6 @@
 		parseMessage(message, $currentThreadMessages, current_thread_users)
 	);
 
-	async function handleNotificationsOnClick() {
-		const newValue = !notifications_enabled;
-		const formData = new URLSearchParams({
-			notifications_enabled: newValue.toString()
-		});
-		await fetch(`?/toggleNotifications`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			},
-			body: formData.toString()
-		});
-	}
-
 	async function handleSignOut() {
 		await fetch('?/sign_out', {
 			method: 'POST',
@@ -111,6 +97,20 @@
 	}
 
 	let modalOpen = false;
+
+	// async function handleNotificationsOnClick() {
+	// 	const newValue = !notifications_enabled;
+	// 	const formData = new URLSearchParams({
+	// 		notifications_enabled: newValue.toString()
+	// 	});
+	// 	await fetch(`?/toggleNotifications`, {
+	// 		method: 'POST',
+	// 		headers: {
+	// 			'Content-Type': 'application/x-www-form-urlencoded'
+	// 		},
+	// 		body: formData.toString()
+	// 	});
+	// }
 </script>
 
 <div id="main" class="flex flex-col w-full h-screen">

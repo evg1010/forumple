@@ -8,7 +8,7 @@
 - [x] Send messages with ChatInput and action (feat/send-message)
 - [ ] Autoscroll when sending messages (feat/send-message)
 - [x] Make sure realtime works in thread (feat/realtime-messages)
-- [ ] Highlight thread in sidebar when new messages arrive (feat/unread)
+- [-] Highlight thread in sidebar when new messages arrive (feat/unread)
 - [x] Create modal to upload images (feat/upload-image)
 - [x] Send image to database and display it on messages (feat/upload-image)
 - [x] Make replies work on messages (feat/reply-to-message)

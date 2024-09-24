@@ -66,40 +66,40 @@ export type Database = {
       }
       threads: {
         Row: {
-          created_at: string
+          active: boolean
           description: string
           id: string
+          last_modified: string
           name: string
         }
         Insert: {
-          created_at?: string
+          active?: boolean
           description?: string
           id?: string
+          last_modified?: string
           name: string
         }
         Update: {
-          created_at?: string
+          active?: boolean
           description?: string
           id?: string
+          last_modified?: string
           name?: string
         }
         Relationships: []
       }
       user_thread: {
         Row: {
-          last_modified: string
           notifications_enabled: boolean
           thread_id: string
           user_id: string
         }
         Insert: {
-          last_modified?: string
           notifications_enabled?: boolean
           thread_id?: string
           user_id?: string
         }
         Update: {
-          last_modified?: string
           notifications_enabled?: boolean
           thread_id?: string
           user_id?: string

@@ -3,7 +3,7 @@
 	import { Button } from 'flowbite-svelte';
 	import { ArrowUpOutline, CloseCircleSolid } from 'flowbite-svelte-icons';
 	import AttachImage from './AttachImage.svelte';
-	import type { Message } from '$lib/types/types';
+	import type { Message, MessageBody } from '$lib/types/types';
 
 	export let reply_message: Message | null = null;
 	let message = '';
@@ -11,14 +11,20 @@
 
 	function handleSubmit() {
 		if (message.trim()) {
+			let body: MessageBody = {
+				content: message.trim()
+			};
+
+			if (reply_message) {
+				body.reply_message_id = reply_message.id;
+			}
+
 			fetch(`?/createMessage`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded'
 				},
-				body: new URLSearchParams({
-					content: message.trim()
-				}).toString()
+				body: new URLSearchParams(body).toString()
 			});
 			message = '';
 			autoResize(); // Reset the height after sending the message

@@ -11,3 +11,9 @@ export type Message = {
 		avatar_url: string;
 	};
 };
+
+export type MessageBody = {
+	content: string;
+	image_url?: string | null;
+	reply_message_id?: string | null;
+};

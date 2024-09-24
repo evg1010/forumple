@@ -5,6 +5,7 @@
 	import { BarsOutline, PlusOutline } from 'flowbite-svelte-icons';
 	import { onMount } from 'svelte';
 	import { supabase } from '$lib/supabaseClient.js';
+	import ThreadModal from '$lib/components/ThreadModal.svelte';
 
 	export let data;
 	let threads: Tables<'threads'>[] = data.threads || [];
@@ -45,6 +46,8 @@
 			subscription.unsubscribe();
 		};
 	});
+
+	let modalOpen = false;
 </script>
 
 <div class="flex w-full h-full">
@@ -63,7 +66,16 @@
 		<div id="chat-history" class="flex flex-col px-3">
 			<div id="head" class="flex py-2 justify-between">
 				<span class="text-lg font-semibold">Chat History</span>
-				<Button color="alternative" size="sm" class="!p-2"><PlusOutline /></Button>
+				<Button color="alternative" size="sm" class="!p-2" on:click={() => (modalOpen = true)}>
+					<PlusOutline />
+				</Button>
+				<ThreadModal
+					current_user={data.current_user}
+					users={data.users || []}
+					title={'Create Thread'}
+					user_threads={data.user_thread_relationships || []}
+					bind:open={modalOpen}
+				/>
 			</div>
 			<div id="list" class="flex-col gap-2">
 				{#each threads as thread}

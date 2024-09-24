@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { supabase } from '$lib/supabaseClient';
-import { json, redirect, error as svelteError, type Actions } from '@sveltejs/kit';
+import { redirect, error as svelteError, type Actions } from '@sveltejs/kit';
 import type { Tables } from '$lib/types/supabase';
 import { PUBLIC_BUCKET_NAME } from '$env/static/public';
 

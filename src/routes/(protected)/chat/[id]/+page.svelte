@@ -127,7 +127,7 @@
 					<BellOutline />
 				{/if}
 			</Button>
-			<Avatar src={data.user?.avatar_url ?? undefined} />
+			<Avatar src={data.current_user?.avatar_url ?? undefined} />
 			<Dropdown>
 				<DropdownItem on:click={handleSignOut}>Sign Out</DropdownItem>
 			</Dropdown>
@@ -137,7 +137,7 @@
 		{#each messages as message}
 			<ChatMessage
 				{message}
-				is_current_user={message.user.id === data.user?.id}
+				is_current_user={message.user.id === data.current_user?.id}
 				on:reply={handleReply}
 			/>
 		{/each}

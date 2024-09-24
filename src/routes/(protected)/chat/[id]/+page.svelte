@@ -12,6 +12,7 @@
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
 	import type { Message } from '$lib/types/types.js';
+	import ThreadModal from '$lib/components/ThreadModal.svelte';
 
 	export let data;
 	let notifications_enabled: boolean = data.notifications_enabled;
@@ -108,25 +109,37 @@
 	function handleReply(event: CustomEvent<Message>) {
 		reply_message = event.detail;
 	}
+
+	let modalOpen = false;
 </script>
 
 <div id="main" class="flex flex-col w-full h-screen">
 	<div
 		id="chat-header"
-		class="flex sticky top-0 px-4 py-1.5 justify-between items-center border-b-2"
+		class="flex sticky top-0 px-4 py-1.5 justify-between items-center border-b-2 bg-rose-200"
 	>
 		<div id="head" class="flex items-center gap-2">
 			<span class="text-lg font-semibold text-gray-700">{currentThread.name}</span>
-			<Button class="!p-2" pill={true} color="none"><EditOutline /></Button>
+			<Button color="alternative" size="sm" class="!p-2" on:click={() => (modalOpen = true)}>
+				<EditOutline />
+			</Button>
+			<ThreadModal
+				current_user={data.current_user}
+				users={data.users || []}
+				title={'Edit Thread'}
+				user_threads={data.user_thread_relationships || []}
+				thread={currentThread}
+				bind:open={modalOpen}
+			/>
 		</div>
 		<div id="tail" class="flex items-center gap-2">
-			<Button class="!p-2" pill={true} color="none" on:click={handleNotificationsOnClick}>
+			<!-- <Button class="!p-2" pill={true} color="none" on:click={handleNotificationsOnClick}>
 				{#if notifications_enabled}
 					<BellRingSolid />
 				{:else}
 					<BellOutline />
 				{/if}
-			</Button>
+			</Button> -->
 			<Avatar src={data.current_user?.avatar_url ?? undefined} />
 			<Dropdown>
 				<DropdownItem on:click={handleSignOut}>Sign Out</DropdownItem>

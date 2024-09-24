@@ -1,6 +1,6 @@
 import type { LayoutServerLoad } from './$types';
 import { supabase } from '$lib/supabaseClient';
-import { error, type Actions } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import type { Tables } from '$lib/types/supabase';
 
 export const load: LayoutServerLoad = async ({ locals: { user } }) => {

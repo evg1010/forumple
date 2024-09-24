@@ -2,7 +2,7 @@
 	import NavItem from '$lib/components/NavItem.svelte';
 	import type { Tables } from '$lib/types/supabase';
 	import { Button } from 'flowbite-svelte';
-	import { BarsOutline, PlusOutline } from 'flowbite-svelte-icons';
+	import { PlusOutline } from 'flowbite-svelte-icons';
 	import { onMount } from 'svelte';
 	import { supabase } from '$lib/supabaseClient.js';
 	import ThreadModal from '$lib/components/ThreadModal.svelte';
@@ -51,16 +51,16 @@
 </script>
 
 <div class="flex w-full h-full">
-	<div id="sidebar" class="flex flex-col w-80 shrink-0 h-full border-r-2">
-		<div id="app-header" class="flex items-center gap-3 px-3">
-			<Button color="alternative" size="lg" class="!p-2"><BarsOutline class="w-6 h-6" /></Button>
+	<div id="sidebar" class="flex flex-col w-80 shrink-0 h-full border-r-2 bg-rose-200">
+		<div id="app-header" class="flex items-center gap-3 px-3 py-1.5">
+			<!-- <Button color="alternative" size="lg" class="!p-2"><BarsOutline class="w-6 h-6" /></Button> -->
 			<div id="logo" class="flex gap-1 items-center">
 				<img
-					src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUm66Ge_N0-YLhMRhezPP3CY1COm7mmjQ9pA&s"
+					src="https://i.pinimg.com/170x/10/a1/84/10a184250bda6ab31902b3b30ba4ee3a.jpg"
 					alt="logo"
-					class="w-8 h-8"
+					class="w-10 h-10"
 				/>
-				<span class="text-2xl font-light text-pink-600">Forumple</span>
+				<span class="text-4xl font-light font-mono text-rose-400">Forumple</span>
 			</div>
 		</div>
 		<div id="chat-history" class="flex flex-col px-3">

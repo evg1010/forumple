@@ -20,7 +20,9 @@
 	class="flex gap-3 w-full first:mt-16 last:mb-4 items-center group"
 	class:justify-end={is_current_user}
 >
-	<div class={`rounded-3xl w-fit max-w-lg p-4 shadow ${is_current_user ? 'bg-gray-100' : ''}`}>
+	<div
+		class={`rounded-3xl w-fit max-w-lg p-4 shadow ${is_current_user ? 'bg-rose-300' : 'bg-rose-50'}`}
+	>
 		<div class="flex w-full gap-2.5">
 			{#if !is_current_user}
 				<Avatar src={message.user.avatar_url ?? undefined} />
@@ -34,7 +36,7 @@
 				</div>
 				{#if message.replyMessageContent}
 					<div id="reply" class="flex gap-1 px-1">
-						<div class="bg-gray-300 w-1.5"></div>
+						<div class={`${is_current_user ? 'bg-rose-200 w-1.5' : 'bg-gray-300 w-1.5'}`}></div>
 						<p class="text-gray-600 break-words">
 							{message.replyMessageContent}
 						</p>

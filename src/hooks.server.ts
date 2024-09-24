@@ -1,5 +1,5 @@
 import { createServerClient } from '@supabase/ssr';
-import { type Handle, redirect } from '@sveltejs/kit';
+import { error, type Handle, redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { PUBLIC_SUPABASE_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
 import type { Tables } from '$lib/types/supabase';
@@ -73,12 +73,26 @@ const authGuard: Handle = async ({ event, resolve }) => {
 	}
 	event.locals.user = current_user;
 
-	if (!event.locals.session && event.url.pathname.startsWith('/private')) {
-		redirect(303, '/auth');
+	if (!event.locals.session && event.url.pathname.startsWith('/chat')) {
+		redirect(303, '/login');
 	}
 
-	if (event.locals.session && event.url.pathname === '/auth') {
-		redirect(303, '/private');
+	if (
+		event.locals.session &&
+		(event.url.pathname === '/login' ||
+			event.url.pathname === '/chat' ||
+			event.url.pathname === '/')
+	) {
+		// Search the last thread the user was in
+		const { data } = await event.locals.supabase
+			.from('user_thread')
+			.select('thread_id')
+			.eq('user_id', event.locals.user?.id)
+			.order('last_modified', { ascending: false })
+			.limit(1);
+
+		if (data) redirect(303, `/chat/${data[0].thread_id}`);
+		else error(404, 'No chat threads found');
 	}
 
 	return resolve(event);

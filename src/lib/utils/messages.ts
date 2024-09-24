@@ -17,6 +17,7 @@ export function parseMessage(
 		id: message.id,
 		createdAt: message.created_at,
 		content: message.content,
+		image_url: message.image_url,
 		reactions: message.reactions,
 		replyMessageContent: replyMessageContent ?? null,
 		user: threadUsers.find((user) => user?.id === message.user_id)

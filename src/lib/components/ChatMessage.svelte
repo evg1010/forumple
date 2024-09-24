@@ -7,7 +7,6 @@
 
 	export let is_current_user: boolean;
 	export let message: Message;
-	export let image: string | null = null;
 
 	const dispatch = createEventDispatcher();
 
@@ -41,8 +40,12 @@
 						</p>
 					</div>
 				{/if}
-				{#if image}
-					<img src={image} class="rounded-2xl object-none h-fit w-fit flex" alt="shared" />
+				{#if message.image_url}
+					<img
+						src={message.image_url}
+						class="rounded-2xl object-none h-fit w-fit flex"
+						alt="shared"
+					/>
 				{/if}
 				<p class="text-gray-800 break-words">
 					{message.content}

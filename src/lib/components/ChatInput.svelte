@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { Button } from 'flowbite-svelte';
 	import { ArrowUpOutline, PaperClipOutline } from 'flowbite-svelte-icons';
+	import AttachImage from './AttachImage.svelte';
 
 	let message = '';
 	let textareaElement: HTMLTextAreaElement | null = null;
@@ -67,9 +68,7 @@
 			style="line-height: 1.5;"
 		></textarea>
 	</div>
-	<Button on:click={handleAttachment} class="!p-2" pill={true} color="alternative">
-		<PaperClipOutline />
-	</Button>
+	<AttachImage />
 	<Button type="submit" class="!p-2" pill={true} color="alternative" disabled={!message.trim()}>
 		<ArrowUpOutline />
 	</Button>

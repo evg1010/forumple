@@ -41,11 +41,7 @@
 					</div>
 				{/if}
 				{#if message.image_url}
-					<img
-						src={message.image_url}
-						class="rounded-2xl object-none h-fit w-fit flex"
-						alt="shared"
-					/>
+					<img src={message.image_url} class="rounded-2xl h-fit w-fit flex" alt="shared" />
 				{/if}
 				<p class="text-gray-800 break-words">
 					{message.content}

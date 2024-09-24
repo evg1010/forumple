@@ -6,11 +6,14 @@
 	import { onMount } from 'svelte';
 	import { supabase } from '$lib/supabaseClient.js';
 	import ThreadModal from '$lib/components/ThreadModal.svelte';
+	import { orderThreads } from '$lib/utils/utils.js';
 
 	export let data;
 	let threads: Tables<'threads'>[] = data.threads || [];
 
 	onMount(() => {
+		threads = orderThreads(threads);
+
 		// Set up realtime subscription
 		const subscription = supabase
 			.channel('threads')

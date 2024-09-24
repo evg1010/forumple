@@ -79,20 +79,29 @@ const authGuard: Handle = async ({ event, resolve }) => {
 
 	if (
 		event.locals.session &&
+		event.locals.user &&
 		(event.url.pathname === '/login' ||
 			event.url.pathname === '/chat' ||
 			event.url.pathname === '/')
 	) {
-		// Search the last thread the user was in
+		// Check if the user is in the public thread
 		const { data } = await event.locals.supabase
 			.from('user_thread')
-			.select('thread_id')
-			.eq('user_id', event.locals.user?.id)
-			.order('last_modified', { ascending: false })
-			.limit(1);
+			.select()
+			.eq('user_id', event.locals.user.id)
+			.eq('thread_id', 'fc01be15-e093-4623-83ef-7c463f1ffc36');
 
-		if (data) redirect(303, `/chat/${data[0].thread_id}`);
-		else error(404, 'No chat threads found');
+		if (!data || data.length !== 1) {
+			// Create a relation for this user and the public thread
+			await event.locals.supabase.from('user_thread').insert([
+				{
+					user_id: event.locals.user.id,
+					thread_id: 'fc01be15-e093-4623-83ef-7c463f1ffc36'
+				}
+			]);
+		}
+
+		redirect(303, '/chat/fc01be15-e093-4623-83ef-7c463f1ffc36'); // Public thread
 	}
 
 	return resolve(event);

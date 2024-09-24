@@ -23,3 +23,15 @@ export function parseMessage(
 		user: threadUsers.find((user) => user?.id === message.user_id)
 	};
 }
+
+export function orderThreads(threads: Tables<'threads'>[]) {
+	threads.sort((a, b) => {
+		return new Date(b.last_modified).getTime() - new Date(a.last_modified).getTime();
+	});
+
+	const activeThread = threads.find((thread) => thread.active);
+	if (activeThread) {
+		return [activeThread, ...threads.filter((thread) => thread.id !== activeThread?.id)];
+	}
+	return threads;
+}

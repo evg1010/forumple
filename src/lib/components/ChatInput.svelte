@@ -74,7 +74,10 @@
 		</div>
 	{/if}
 
-	<form on:submit|preventDefault={handleSubmit} class="flex gap-2 px-5 py-3 w-full items-center">
+	<form
+		on:submit|preventDefault={handleSubmit}
+		class="flex gap-2 px-5 py-3 w-full items-center bg-gradient-to-r from-rose-200 to-rose-100"
+	>
 		<div class="flex flex-grow items-end">
 			<textarea
 				bind:value={message}

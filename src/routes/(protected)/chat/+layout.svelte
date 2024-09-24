@@ -2,7 +2,7 @@
 	import NavItem from '$lib/components/NavItem.svelte';
 	import type { Tables } from '$lib/types/supabase';
 	import { Button } from 'flowbite-svelte';
-	import { BarsOutline, PlusOutline } from 'flowbite-svelte-icons';
+	import { PlusOutline } from 'flowbite-svelte-icons';
 	import { onMount } from 'svelte';
 	import { supabase } from '$lib/supabaseClient.js';
 	import ThreadModal from '$lib/components/ThreadModal.svelte';

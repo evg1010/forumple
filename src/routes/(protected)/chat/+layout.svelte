@@ -2,7 +2,7 @@
 	import NavItem from '$lib/components/NavItem.svelte';
 	import type { Tables } from '$lib/types/supabase';
 	import { Button } from 'flowbite-svelte';
-	import { BarsOutline } from 'flowbite-svelte-icons';
+	import { BarsOutline, PlusOutline } from 'flowbite-svelte-icons';
 	import { onMount } from 'svelte';
 	import { supabase } from '$lib/supabaseClient.js';
 
@@ -61,8 +61,9 @@
 			</div>
 		</div>
 		<div id="chat-history" class="flex flex-col px-3">
-			<div id="head" class="py-2">
+			<div id="head" class="flex py-2 justify-between">
 				<span class="text-lg font-semibold">Chat History</span>
+				<Button color="alternative" size="sm" class="!p-2"><PlusOutline /></Button>
 			</div>
 			<div id="list" class="flex-col gap-2">
 				{#each threads as thread}

@@ -3,7 +3,7 @@
 - [x] Create files for new components (feat/chat-components)
 - [-] Create Modal to modify thread (feat/edit-thread)
 - [ ] Create Modal to delete thread (feat/delete-thread)
-- [-] Create Modal to create new thread and button (feat/create-thread)
+- [x] Create Modal to create new thread and button (feat/create-thread)
 - [x] Load messages to thread (feat/load-messages)
 - [x] Send messages with ChatInput and action (feat/send-message)
 - [ ] Autoscroll when sending messages (feat/send-message)

@@ -6,7 +6,6 @@
 	import { Button } from 'flowbite-svelte';
 	import { PlusOutline } from 'flowbite-svelte-icons';
 	import ThreadModal from '$lib/components/ThreadModal.svelte';
-	import type { Message } from '$lib/types/types';
 
 	const test_messages: Message[] = [
 		{

@@ -6,25 +6,34 @@
 	import { Button } from 'flowbite-svelte';
 	import { PlusOutline } from 'flowbite-svelte-icons';
 	import ThreadModal from '$lib/components/ThreadModal.svelte';
+	import type { Message } from '$lib/types/types';
 
-	const test_messages: Tables<'messages'>[] = [
+	const test_messages: Message[] = [
 		{
 			id: '1',
-			user_id: '1',
-			content: "That's awesome. I think our users will really appreciate the improvements.",
-			created_at: '2021-01-01 12:00:00',
+			createdAt: '2023-10-01T12:00:00Z',
+			content: 'Hello, world!',
 			reactions: null,
-			reply_message_id: null,
-			thread_id: '1'
+			replyMessageContent: null,
+			user: {
+				id: 'user1',
+				name: 'Alice',
+				avatar_url:
+					'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/roberta-casas.png'
+			}
 		},
 		{
 			id: '2',
-			user_id: '2',
-			content: 'Yeah! totally agree with you. Send me the details',
-			created_at: '2021-01-01 12:01:00',
+			createdAt: '2023-10-01T12:05:00Z',
+			content: 'Yeah! Totally agree with you. Send me the details.',
 			reactions: null,
-			reply_message_id: null,
-			thread_id: '1'
+			replyMessageContent: null,
+			user: {
+				id: 'user2',
+				name: 'Bob',
+				avatar_url:
+					'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/roberta-casas.png'
+			}
 		}
 	];
 
@@ -60,12 +69,14 @@
 		{
 			user_id: '1',
 			thread_id: '1',
-			notifications_enabled: true // add this property if it's required by the type
+			notifications_enabled: true, // add this property if it's required by the type
+			last_modified: ''
 		},
 		{
 			user_id: '2',
 			thread_id: '1',
-			notifications_enabled: true // add this property if it's required by the type
+			notifications_enabled: true, // add this property if it's required by the type
+			last_modified: ''
 		}
 	];
 
@@ -92,15 +103,15 @@
 			is_current_user={true}
 			image={'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/karen-nelson.png'}
 		/>
-		<ChatMessage message={test_messages[0]} />
-		<ChatMessage message={test_messages[1]} is_current_user={true} reply_to={test_messages[0]} />
+		<ChatMessage message={test_messages[0]} is_current_user={false} />
+		<ChatMessage message={test_messages[1]} is_current_user={true} />
 		<ChatMessage
 			message={test_messages[0]}
 			is_current_user={true}
 			image={'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/karen-nelson.png'}
 		/>
-		<ChatMessage message={test_messages[0]} />
-		<ChatMessage message={test_messages[1]} is_current_user={true} reply_to={test_messages[0]} />
+		<ChatMessage message={test_messages[0]} is_current_user={false} />
+		<ChatMessage message={test_messages[1]} is_current_user={true} />
 	</ChatContainer>
 	<ChatInput />
 </div>

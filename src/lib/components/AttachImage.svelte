@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { deserialize } from '$app/forms';
 	import { Button, Modal, Textarea } from 'flowbite-svelte';
 	import { PaperClipOutline } from 'flowbite-svelte-icons';
 
@@ -21,35 +22,49 @@
 	}
 
 	async function handleUpload() {
-		if (file) {
-			const formData = new FormData();
-			formData.append('file', file);
+		if (!file) return;
 
-			fetch(`?/upload_image`, {
+		const formData = new FormData();
+		formData.append('file', file);
+
+		try {
+			const uploadResponse = await fetch(`?/upload_image`, {
 				method: 'POST',
 				body: formData
-			})
-				.then((response) => response.json())
-				.then((data) => {
-					const image_url = data.image_url;
-					console.log('IMAGE: ', image_url);
+			});
 
-					if (image_url) {
-						fetch(`?/createMessage`, {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/x-www-form-urlencoded'
-							},
-							body: new URLSearchParams({
-								content: content,
-								image_url: image_url
-							}).toString()
-						});
-					}
-				})
-				.catch((error) => {
-					console.error(error);
+			if (!uploadResponse.ok) {
+				throw new Error(`HTTP error! status: ${uploadResponse.status}`);
+			}
+
+			const { data } = deserialize(await uploadResponse.text());
+			console.log(data);
+
+			const image_url = data.image_url;
+			console.log('IMAGE: ', image_url);
+
+			if (image_url) {
+				const messageResponse = await fetch(`?/createMessage`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					},
+					body: new URLSearchParams({
+						content: content,
+						image_url: image_url
+					}).toString()
 				});
+
+				if (!messageResponse.ok) {
+					throw new Error(`HTTP error! status: ${messageResponse.status}`);
+				}
+
+				// Handle successful message creation here if needed
+				console.log('Message created successfully');
+			}
+		} catch (error) {
+			console.error('An error occurred:', error);
+			// Handle the error appropriately (e.g., show an error message to the user)
 		}
 	}
 </script>

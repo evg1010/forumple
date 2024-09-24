@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { supabase } from '$lib/supabaseClient';
-import { error as svelteError, type Actions } from '@sveltejs/kit';
+import { redirect, error as svelteError, type Actions } from '@sveltejs/kit';
 import type { Tables } from '$lib/types/supabase';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
@@ -80,5 +80,16 @@ export const actions: Actions = {
 			console.log('Error creating message: ', error?.message);
 			console.log('Message created');
 		}
+	},
+	sign_out: async ({ locals: { supabase } }) => {
+		const { error: requestError } = await supabase.auth.signOut();
+		if (requestError) {
+			console.log(requestError);
+			throw svelteError(requestError?.status || 500, {
+				message: requestError?.message || 'Ocurrió un error'
+			});
+		}
+		console.log('SIGN OUT');
+		redirect(302, '/login');
 	}
 };

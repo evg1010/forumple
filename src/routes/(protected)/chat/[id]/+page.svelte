@@ -10,6 +10,7 @@
 	import { supabase } from '$lib/supabaseClient.js';
 	import { parseMessage } from '$lib/utils/messages';
 	import { writable } from 'svelte/store';
+	import { goto } from '$app/navigation';
 
 	export let data;
 	let notifications_enabled: boolean = data.notifications_enabled;
@@ -90,6 +91,16 @@
 			body: formData.toString()
 		});
 	}
+
+	async function handleSignOut() {
+		await fetch('?/sign_out', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			}
+		});
+		throw goto('/login');
+	}
 </script>
 
 <div id="main" class="flex flex-col w-full h-full">
@@ -108,7 +119,7 @@
 			</Button>
 			<Avatar src={data.user?.avatar_url ?? undefined} />
 			<Dropdown>
-				<DropdownItem>Sign Out</DropdownItem>
+				<DropdownItem on:click={handleSignOut}>Sign Out</DropdownItem>
 			</Dropdown>
 		</div>
 	</div>

@@ -113,20 +113,20 @@
 <div id="main" class="flex flex-col w-full h-screen">
 	<div
 		id="chat-header"
-		class="flex sticky top-0 px-4 py-1.5 justify-between items-center border-b-2"
+		class="flex sticky top-0 px-4 py-1.5 justify-between items-center border-b-2 bg-rose-200"
 	>
 		<div id="head" class="flex items-center gap-2">
 			<span class="text-lg font-semibold text-gray-700">{currentThread.name}</span>
-			<Button class="!p-2" pill={true} color="none"><EditOutline /></Button>
+			<Button class="!p-2" color="alternative"><EditOutline /></Button>
 		</div>
 		<div id="tail" class="flex items-center gap-2">
-			<Button class="!p-2" pill={true} color="none" on:click={handleNotificationsOnClick}>
+			<!-- <Button class="!p-2" pill={true} color="none" on:click={handleNotificationsOnClick}>
 				{#if notifications_enabled}
 					<BellRingSolid />
 				{:else}
 					<BellOutline />
 				{/if}
-			</Button>
+			</Button> -->
 			<Avatar src={data.current_user?.avatar_url ?? undefined} />
 			<Dropdown>
 				<DropdownItem on:click={handleSignOut}>Sign Out</DropdownItem>

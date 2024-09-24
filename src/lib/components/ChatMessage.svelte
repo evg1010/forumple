@@ -20,7 +20,7 @@
 	class="flex gap-3 w-full first:mt-16 last:mb-4 items-center group"
 	class:justify-end={is_current_user}
 >
-	<div class={`rounded-3xl w-fit max-w-lg p-4 shadow ${is_current_user ? 'bg-gray-100' : ''}`}>
+	<div class={`rounded-3xl w-fit max-w-lg p-4 shadow ${is_current_user ? 'bg-rose-300' : ''}`}>
 		<div class="flex w-full gap-2.5">
 			{#if !is_current_user}
 				<Avatar src={message.user.avatar_url ?? undefined} />

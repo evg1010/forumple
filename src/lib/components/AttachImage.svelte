@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { Button, Modal, Textarea, Label } from 'flowbite-svelte';
+	import { Button, Modal, Textarea } from 'flowbite-svelte';
 	import { PaperClipOutline } from 'flowbite-svelte-icons';
 
 	let openModal = false;
 	let file: File | null = null;
 	let previewUrl: string | null = null;
+	let content: string = '';
 
 	function handleFileSelect(event: Event) {
 		const input = event.target as HTMLInputElement;
@@ -17,6 +18,42 @@
 
 	function triggerFileInput() {
 		document.getElementById('file-upload')?.click();
+	}
+
+	function handleUpload() {
+		if (file) {
+			const formData = new FormData();
+			formData.append('file', file);
+
+			fetch(`?/upload_image`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				body: formData
+			})
+				.then((response) => response.json())
+				.then((data) => {
+					const image_url = data.image_url;
+					console.log(image_url);
+
+					if (image_url) {
+						fetch(`?/createMessage`, {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/x-www-form-urlencoded'
+							},
+							body: new URLSearchParams({
+								content: content,
+								image_url: image_url
+							}).toString()
+						});
+					}
+				})
+				.catch((error) => {
+					console.error(error);
+				});
+		}
 	}
 </script>
 
@@ -36,9 +73,9 @@
 		<img src={previewUrl} alt="to share" />
 	</div>
 
-	<Textarea placeholder="Write your message ..." />
+	<Textarea bind:value={content} placeholder="Write your message ..." />
 	<svelte:fragment slot="footer">
-		<Button on:click={() => alert('Handle "success"')}>Send</Button>
+		<Button on:click={handleUpload}>Send</Button>
 		<Button color="alternative">Cancel</Button>
 	</svelte:fragment>
 </Modal>

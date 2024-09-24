@@ -69,14 +69,8 @@
 		{
 			user_id: '1',
 			thread_id: '1',
-			notifications_enabled: true, // add this property if it's required by the type
-			last_modified: ''
-		},
-		{
-			user_id: '2',
-			thread_id: '1',
-			notifications_enabled: true, // add this property if it's required by the type
-			last_modified: ''
+			notifications_enabled: true,
+			last_modified: 'lklk'
 		}
 	];
 
@@ -93,7 +87,7 @@
 			users={test_users}
 			title={'Create Thread'}
 			thread={test_thread[0]}
-			user_thread={test_user_threads}
+			user_threads={test_user_threads}
 			bind:open={modalOpen}
 		/>
 	</div>

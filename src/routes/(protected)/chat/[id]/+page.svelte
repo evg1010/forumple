@@ -11,6 +11,7 @@
 	import { parseMessage } from '$lib/utils/messages';
 	import { writable } from 'svelte/store';
 	import { goto } from '$app/navigation';
+	import type { Message } from '$lib/types/types.js';
 
 	export let data;
 	let notifications_enabled: boolean = data.notifications_enabled;
@@ -19,6 +20,8 @@
 	let currentThread: Tables<'threads'> = data.threads?.find(
 		(thread) => thread.id === $page.params.id
 	);
+
+	let reply_message: Message;
 
 	onMount(() => {
 		// Set up realtime subscription
@@ -101,10 +104,17 @@
 		});
 		throw goto('/login');
 	}
+
+	function handleReply(event: CustomEvent<Message>) {
+		reply_message = event.detail;
+	}
 </script>
 
-<div id="main" class="flex flex-col w-full h-full">
-	<div id="chat-header" class="flex px-4 py-1.5 justify-between items-center border-b-2">
+<div id="main" class="flex flex-col w-full h-screen">
+	<div
+		id="chat-header"
+		class="flex sticky top-0 px-4 py-1.5 justify-between items-center border-b-2"
+	>
 		<div id="head" class="flex items-center gap-2">
 			<span class="text-lg font-semibold text-gray-700">{currentThread.name}</span>
 			<Button class="!p-2" pill={true} color="none"><EditOutline /></Button>
@@ -123,12 +133,14 @@
 			</Dropdown>
 		</div>
 	</div>
-	<div id="chat" class="flex flex-col w-full h-screen">
-		<ChatContainer>
-			{#each messages as message}
-				<ChatMessage {message} is_current_user={message.user.id === data.user?.id} />
-			{/each}
-		</ChatContainer>
-		<ChatInput />
-	</div>
+	<ChatContainer>
+		{#each messages as message}
+			<ChatMessage
+				{message}
+				is_current_user={message.user.id === data.user?.id}
+				on:reply={handleReply}
+			/>
+		{/each}
+	</ChatContainer>
+	<ChatInput bind:reply_message />
 </div>

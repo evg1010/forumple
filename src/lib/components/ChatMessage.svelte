@@ -1,20 +1,28 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
 	import type { Message } from '$lib/types/types';
-	import { Avatar } from 'flowbite-svelte';
+	import { Avatar, Button } from 'flowbite-svelte';
+	import { ReplyOutline } from 'flowbite-svelte-icons';
 	import moment from 'moment';
 
 	export let is_current_user: boolean;
 	export let message: Message;
 	export let image: string | null = null;
+
+	const dispatch = createEventDispatcher();
+
+	function handleReply() {
+		dispatch('reply', message);
+	}
 </script>
 
 <div
 	id="message"
-	class="flex gap-3 w-full first:mt-16 last:mb-4"
+	class="flex gap-3 w-full first:mt-16 last:mb-4 items-center group"
 	class:justify-end={is_current_user}
 >
-	<div class={`rounded-3xl w-full max-w-lg p-4 shadow ${is_current_user ? 'bg-gray-100' : ''}`}>
-		<div class="flex gap-2.5">
+	<div class={`rounded-3xl w-fit max-w-lg p-4 shadow ${is_current_user ? 'bg-gray-100' : ''}`}>
+		<div class="flex w-full gap-2.5">
 			{#if !is_current_user}
 				<Avatar src={message.user.avatar_url ?? undefined} />
 			{/if}
@@ -27,6 +35,7 @@
 				</div>
 				{#if message.replyMessageContent}
 					<div id="reply" class="flex gap-1 px-1">
+						<div class="bg-gray-300 w-1.5"></div>
 						<p class="text-gray-600 break-words">
 							{message.replyMessageContent}
 						</p>
@@ -41,4 +50,13 @@
 			</div>
 		</div>
 	</div>
+	<Button
+		color="alternative"
+		pill={true}
+		size="xs"
+		class={`!p-2 h-fit text-gray-200 hover:text-gray-500 group-hover:block hidden ${is_current_user ? 'order-first' : ''}`}
+		on:click={handleReply}
+	>
+		<ReplyOutline class="w-4 h-4" />
+	</Button>
 </div>

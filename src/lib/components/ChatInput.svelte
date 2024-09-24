@@ -55,7 +55,7 @@
 	on:submit|preventDefault={handleSubmit}
 	class="flex gap-2 px-5 py-3 w-full items-center border-t-2"
 >
-	<div class="flex flex-grow relative items-end">
+	<div class="flex flex-grow items-end">
 		<textarea
 			bind:value={message}
 			bind:this={textareaElement}
